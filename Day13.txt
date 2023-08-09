@@ -1,0 +1,134 @@
+1.Write a CL program to add 2 numbers.
+
+
+ FMT **  ...+... 1 ...+... 2 ...+... 3 ...+... 4 ...+... 5 ...+... 6 ...+... 7  
+        *************** Beginning of data ************************************* 
+0001.00 PGM                                                                     
+0002.00              DCL        VAR(&A) TYPE(*DEC) LEN(3 0) VALUE(150)          
+0003.00              DCL        VAR(&B) TYPE(*DEC) LEN(3 0) VALUE(200)          
+0004.00              DCL        VAR(&C) TYPE(*DEC) LEN(5 0) VALUE(0)            
+0005.00              DCL        VAR(&CH) TYPE(*CHAR) LEN(5)                     
+0006.00              CHGVAR     VAR(&C) VALUE(&A + &B)                          
+0007.00              CHGVAR VAR(&CH) VALUE(&C)                                  
+0007.01              SNDPGMMSG  MSG('THE SUM' *BCAT &CH)                        
+0009.00 ENDPGM                                                                  
+        ****************** End of data **************************************** 
+2.Write a CL program to revert a string.
+
+
+ SEU==>                                                                 REVERTC 
+ FMT **  ...+... 1 ...+... 2 ...+... 3 ...+... 4 ...+... 5 ...+... 6 ...+... 7  
+        *************** Beginning of data ************************************* 
+0001.00 PGM PARM(&NM)                                                           
+0002.00   DCL VAR(&NM) TYPE(*CHAR) LEN(20)                                      
+0003.00   DCL VAR(&CH) TYPE(*CHAR) LEN(1)                                       
+0004.00   DCL VAR(&RV) TYPE(*CHAR) LEN(20)                                      
+0005.00   DCL VAR(&POS) TYPE(*DEC) LEN(2 0) VALUE(20)                           
+0006.00   DOWHILE COND(&POS > 0)                                                
+0007.00    CHGVAR VAR(&CH) VALUE(%SST(&NM &POS 1))                              
+0008.00    CHGVAR VAR(&RV) VALUE(&RV *TCAT &CH)                                 
+0009.00    CHGVAR VAR(&POS) VALUE(&POS - 1)                                     
+0010.00   ENDDO                                                                 
+0011.00   SNDPGMMSG MSG(&NM *BCAT 'REVERTED AS' *BCAT &RV)                      
+0012.00   ENDPGM                                                                
+        ****************** End of data **************************************** 
+3.Write a CL program to implement a calculator
+
+  
+ SEU==>                                                                   CALCC 
+ FMT **  ...+... 1 ...+... 2 ...+... 3 ...+... 4 ...+... 5 ...+... 6 ...+... 7  
+        *************** Beginning of data ************************************* 
+0001.00 PGM                                                                     
+0002.00              DCLF       FILE(*CURLIB/CALCD)                             
+0003.00              DOWHILE COND(&IN53='0')                                    
+0004.00              SNDRCVF    RCDFMT(NUMENT)                                  
+0005.00              IF COND(&IN53='1') THEN(LEAVE)                             
+0006.00              IF         COND(&OPT = 'A') THEN(CHGVAR VAR(&C) +          
+0007.00                           VALUE(&A + &B))                               
+0008.00              IF         COND(&OPT = 'S') THEN(CHGVAR VAR(&C) +          
+0009.00                           VALUE(&A - &B))                               
+0009.01              IF         COND(&OPT = 'M') THEN(CHGVAR VAR(&C) +          
+0009.02                           VALUE(&A * &B))                               
+0011.00              IF         COND(&OPT = 'D') THEN(CHGVAR VAR(&C) +          
+0012.00                           VALUE(&A / &B))                               
+0013.00              ENDDO                                                      
+0014.00              ENDPGM                                                     
+        ****************** End of data **************************************** 
+4.Write a CL program to CALL another RPGLE program through display file.
+
+
+
+
+ SEU==>                                                                  MENU1C
+ FMT **  ...+... 1 ...+... 2 ...+... 3 ...+... 4 ...+... 5 ...+... 6 ...+... 7 
+        *************** Beginning of data *************************************
+0001.00 PGM                                                                    
+0002.00                                                                        
+0003.00              DCLF       FILE(*CURLIB/MENUDSP)                          
+0004.00              DOWHILE COND(&IN03='0')                                   
+0005.00              SNDRCVF    RCDFMT(MENUSCR)                                
+0006.00              IF COND(&IN03='1') THEN(LEAVE)                            
+0007.00              IF         COND(&OPT = '1') THEN(CALL +                   
+0007.01                           PGM(*CURLIB/EMPSFLR))                        
+0008.00              IF         COND(&OPT = '2') THEN(CALL +                   
+0008.01                           PGM(*CURLIB/EMPUPDR))                        
+0009.00              IF         COND(&OPT = '3') THEN(CALL +                   
+0009.01                           PGM(*CURLIB/DEPTQRYR))                       
+0010.00              IF         COND(&OPT = '4') THEN(CALL +                   
+0011.00                           PGM(*CURLIB/NAVIGATER))                      
+0012.00              IF         COND(&OPT = '5') THEN(SBMJOB CMD(CALL +        
+0012.01                           PGM(*CURLIB/SALREPOR)))                      
+0014.00              ENDDO                                                  
+0015.00 ENDPGM                                                              
+        ****************** End of data *************************************
+
+5.Write a CL program to CALL another RPGLE program through display file using RTNCSRLOC.
+
+
+
+
+ SEU==>                                                                  MENU2C 
+ FMT **  ...+... 1 ...+... 2 ...+... 3 ...+... 4 ...+... 5 ...+... 6 ...+... 7  
+        *************** Beginning of data ************************************* 
+0001.00  PGM                                                                    
+0002.00              DCLF       FILE(*CURLIB/MENU1DSP)                          
+0003.00              DOWHILE COND(&IN03='0')                                    
+0004.00              SNDRCVF RCDFMT(MENUSCR)                                    
+0005.00              IF COND(&IN03= '1') THEN(LEAVE)                            
+0006.00              IF         COND(&RTNFLD = 'M1') THEN(CALL +                
+0007.00                           PGM(*CURLIB/PERSONR))                         
+0008.00              IF         COND(&RTNFLD = 'M2') THEN(CALL +                
+0009.00                           PGM(*CURLIB/EMPUPDR))                         
+0010.00              IF         COND(&RTNFLD = 'M3') THEN(CALL +                
+0011.00                           PGM(*CURLIB/DEPTQRYR))                        
+0012.00              IF         COND(&RTNFLD = 'M4') THEN(CALL +                
+0013.00                           PGM(*CURLIB/NAVIGATER))                       
+0014.00              IF         COND(&RTNFLD = 'M5') THEN(SBMJOB CMD(CALL +     
+0015.00                           PGM(*CURLIB/SALREPOR)))                       
+0016.00              ENDDO                                                      
+0017.00  ENDPGM                                                                
+        ****************** End of data ****************************************
+
+6.One day a theif after robbery start running away at 10km/h. Police were behind theif by 1km/h
+in first hour,but their speed was increading by 1km/h.After how many hours police caught theif 
+should be calculated by CL program.
+
+
+ 
+ SEU==>                                                                  SPEEDC 
+ FMT **  ...+... 1 ...+... 2 ...+... 3 ...+... 4 ...+... 5 ...+... 6 ...+... 7  
+        *************** Beginning of data ************************************* 
+0001.00 PGM                                                                     
+0002.00   DCL VAR(&K) TYPE(*DEC) LEN(3 0) VALUE(1)                              
+0003.00   DCL VAR(&T) TYPE(*DEC) LEN(3 0) VALUE(10)                             
+0004.00   DCL VAR(&P) TYPE(*DEC) LEN(3 0) VALUE(1)                              
+0005.00   DCL VAR(&CH) TYPE(*CHAR) LEN(20)                                      
+0006.00   DOWHILE COND(&T> &P)                                                  
+0007.00   CHGVAR VAR(&K) VALUE(&K+1)                                            
+0008.00   CHGVAR VAR(&P) VALUE(&P+&K)                                           
+0009.00   CHGVAR VAR(&T) VALUE(&T+10)                                           
+0010.00   ENDDO                                                                 
+0011.00   CHGVAR VAR(&CH) VALUE(&P)                                             
+0012.00   SNDPGMMSG MSG('POLICE CAUGHT AFTER ' *BCAT &CH)                       
+0013.00   ENDPGM                                                                
+        ****************** End of data **************************************** 
